@@ -250,6 +250,7 @@ The single-column design maximizes information density while remaining readable 
 ```
 PWS/
 ├── weather_monitor_enhanced.py  # New enhanced PWS monitor
+├── run.bat                     # Windows batch convenience wrapper
 ├── requirements.txt            # Dependencies
 ├── setup.ps1                   # Windows setup script
 └── README.md                   # This file
