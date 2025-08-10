@@ -52,8 +52,7 @@ Before using the weather monitor, you need to obtain a Weather Underground API k
 
 1. **Visit any Weather Underground PWS page**:
    - Go to `https://www.wunderground.com/dashboard/pws/[STATION_ID]`
-   - Example: `https://www.wunderground.com/dashboard/pws/YOUR_STATION_ID`
-
+   
 2. **Open Developer Tools**:
    - **Chrome/Edge**: Press `F12` or `Ctrl+Shift+I`
    - **Firefox**: Press `F12` or `Ctrl+Shift+I`
@@ -238,48 +237,11 @@ The single-column design maximizes information density while remaining readable 
 - **IoT device terminals** with constrained displays
 - **Terminal-only environments** without GUI
 
-## 🆚 Comparison: Old vs New
-
-| Feature | Old Version | Enhanced Version |
-|---------|-------------|------------------|
-| **Interface** | Plain text | htop-like with panels |
-| **Layout** | Simple list | Compact single-column |
-| **Window Size** | Any width | Optimized for small (60+ chars) |
-| **Colors** | None | Smart color coding |
-| **Graphs** | None | Inline sparklines |
-| **History** | Current only | 60-point rolling history |
-| **Trends** | None | Trend indicators (↗↘─) |
-| **Data Density** | Low | High (conditions + graphs) |
-| **Error Display** | Basic text | Styled error panels |
-| **Mobile Friendly** | No | Yes (works on phone terminals) |
-| **Customization** | Fixed | Configurable intervals |
-
-## 🏗️ Architecture Improvements
-
-### Object-Oriented Design
-- **`WeatherData`** class for historical data management
-- **`WeatherMonitor`** class for main application logic
-- **`WeatherThresholds`** dataclass for color configuration
-- Clean separation of concerns
-
-### Data Management
-- **Circular buffers** (deque) for efficient memory usage
-- **Safe type conversion** with proper error handling
-- **Time-series data** with automatic cleanup
-
-### Visual Enhancements
-- **Responsive layout** with rich Layout system
-- **Dynamic content** updates without screen flicker
-- **Sparkline generation** algorithm for trend visualization
-- **Color theme system** with configurable thresholds
-
 ## 📁 File Structure
 
 ```
 PWS/
-├── weather_monitor_enhanced.py  # New enhanced version
-├── get_weather.py              # Your current version
-├── get_weather.old.py          # Original version
+├── weather_monitor_enhanced.py  # New enhanced PWS monitor
 ├── requirements.txt            # Dependencies
 ├── setup.ps1                   # Windows setup script
 └── README.md                   # This file
