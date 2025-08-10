@@ -175,8 +175,14 @@ To find Personal Weather Station IDs to monitor:
 
 2. **Run the monitor:**
    ```bash
+   # Using Python directly
    python weather_monitor_enhanced.py YOUR_STATION_ID
+   
+   # Using the Windows batch file (convenience wrapper)
+   run.bat
    ```
+   
+   > **Note**: The `run.bat` file is a Windows convenience wrapper that automatically launches the Python script. You'll need to edit the batch file and replace `[STATION-ID]` with your actual station ID before using it.
 
 ### Usage Examples
 ```bash
