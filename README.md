@@ -1,6 +1,8 @@
-# Enhanced Personal Weather Station Monitor
+# Enhanced Personal Weather Station Monitor for Weather Underground PWS
 
 A real-time weather monitoring tool with htop-like interface, colorized displays, and inline historical trend graphs optimized for small terminal windows.
+
+Requires a Weather Underground compatible Personal Weather Station. (Such as the AcuRite Iris)
 
 ## ✨ Key Features
 
