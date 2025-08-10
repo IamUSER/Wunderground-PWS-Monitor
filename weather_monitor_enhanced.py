@@ -217,6 +217,32 @@ class WeatherMonitor:
         else:
             return "red"
     
+    def degrees_to_cardinal(self, degrees: Optional[float]) -> str:
+        """Convert wind direction in degrees to cardinal direction"""
+        if degrees is None:
+            return "N/A"
+        
+        try:
+            degrees = float(degrees)
+            # Normalize to 0-360 range
+            degrees = degrees % 360
+            
+            # Cardinal and intercardinal directions with 22.5 degree segments
+            directions = [
+                "N", "NNE", "NE", "ENE",
+                "E", "ESE", "SE", "SSE", 
+                "S", "SSW", "SW", "WSW",
+                "W", "WNW", "NW", "NNW"
+            ]
+            
+            # Each direction covers 22.5 degrees (360/16)
+            # Add 11.25 to center the ranges on the directions
+            index = int((degrees + 11.25) / 22.5) % 16
+            return directions[index]
+            
+        except (ValueError, TypeError):
+            return "N/A"
+    
     def create_rich_display(self, obs_data: dict) -> Layout:
         """Create rich terminal display layout"""
         # Create main layout structure - single column for small windows
@@ -400,13 +426,6 @@ class WeatherMonitor:
             Text(temp_graph, style="dim")
         )
         
-        # Feels Like row (no graph)
-        table.add_row(
-            "Feels Like:",
-            Text(f"{feels_like:.1f}°F" if feels_like else "N/A", style=self.get_color_for_temperature(feels_like)),
-            "",
-            ""
-        )
         
         # Humidity row
         humidity_graph = ""
@@ -431,11 +450,15 @@ class WeatherMonitor:
             if wind_values:
                 wind_graph = self.weather_data.get_sparkline(self.weather_data.wind_speed, graph_width)
                 wind_range = f"({min(wind_values):.0f}-{max(wind_values):.0f}mph)"
+                # Add wind gust info if available
+                if wind_gust and wind_gust > 0:
+                    wind_range += f" G:{wind_gust:.0f}"
                 wind_graph += f" {wind_range}"
         
         wind_display = f"{wind_speed:.1f} mph" if wind_speed else "N/A"
         if wind_dir != 'N/A' and wind_speed:
-            wind_display += f" from {wind_dir}°"
+            cardinal_dir = self.degrees_to_cardinal(self._safe_float(wind_dir))
+            wind_display += f" from {wind_dir}° ({cardinal_dir})"
         
         table.add_row(
             "Wind Speed:",
@@ -444,14 +467,6 @@ class WeatherMonitor:
             Text(wind_graph, style="dim")
         )
         
-        # Wind Gust row (if applicable)
-        if wind_gust and wind_gust > 0:
-            table.add_row(
-                "Wind Gust:",
-                Text(f"{wind_gust:.1f} mph", style=self.get_color_for_wind(wind_gust)),
-                "",
-                ""
-            )
         
         # Pressure row
         pressure_graph = ""
@@ -540,15 +555,18 @@ class WeatherMonitor:
         temp = self._safe_float(imperial.get('temp'))
         lines.append(f"Temperature:    {temp:.1f}°F" if temp else "Temperature:    N/A")
         
-        feels_like = self._safe_float(imperial.get('heatIndex'))
-        lines.append(f"Feels Like:     {feels_like:.1f}°F" if feels_like else "Feels Like:     N/A")
         
         humidity = self._safe_float(obs_data.get('humidity'))
         lines.append(f"Humidity:       {humidity:.0f}%" if humidity else "Humidity:       N/A")
         
         wind_speed = self._safe_float(imperial.get('windSpeed'))
         wind_dir = obs_data.get('winddir', 'N/A')
-        lines.append(f"Wind:           {wind_speed:.1f} mph from {wind_dir}°" if wind_speed else f"Wind:           N/A from {wind_dir}°")
+        if wind_speed:
+            cardinal_dir = self.degrees_to_cardinal(self._safe_float(wind_dir))
+            lines.append(f"Wind:           {wind_speed:.1f} mph from {wind_dir}° ({cardinal_dir})")
+        else:
+            cardinal_dir = self.degrees_to_cardinal(self._safe_float(wind_dir))
+            lines.append(f"Wind:           N/A from {wind_dir}° ({cardinal_dir})")
         
         pressure = self._safe_float(imperial.get('pressure'))
         lines.append(f"Pressure:       {pressure:.2f} inHg" if pressure else "Pressure:       N/A")
